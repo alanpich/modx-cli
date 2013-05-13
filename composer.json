@@ -1,0 +1,22 @@
+{
+    "name": "AlanPich/modx-cli",
+    "description": "CLI tool for MODx development",
+    "minimum-stability": "stable",
+    "authors": [
+        {
+            "name": "Alan Pich",
+            "email": "alan.pich@gmail.com"
+        }
+    ],
+
+    "autoload": {
+        "psr-0": { "AlanPich\\Modx": "src/" }
+    },
+
+    "require": {
+        "symfony/console": "2.3.*@dev",
+        "phpdocumentor/reflection-docblock": "dev-master",
+        "symfony/filesystem": "2.3.*@dev",
+        "symfony/config": "2.3.*@dev"
+    }
+}
