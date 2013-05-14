@@ -1,2 +1,5 @@
-*
-!vapor
+*/
+autoload.php
+!vapor/**
+!vapor/model/*
+!vapor/scripts/*
