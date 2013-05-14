@@ -31,7 +31,8 @@ try {
             $vaporOptions = array_merge($vaporOptions, $vaporConfigOptions);
         }
     }
-    include dirname(dirname(__FILE__)) . '/config.core.php';
+    #include dirname(dirname(__FILE__)) . '/config.core.php';
+    include VAPOR_MODX_DIR . '/config.core.php';
     include MODX_CORE_PATH . 'model/modx/modx.class.php';
 
     if (!XPDO_CLI_MODE && !ini_get('safe_mode')) {
@@ -575,3 +576,6 @@ try {
     printf("Vapor execution completed with exception in %2.4fs\n", $endTime - $startTime);
 }
 printf("Vapor execution completed without exception in %2.4fs\n", $endTime - $startTime);
+
+
+die("VAPOURED TO ".PKG_NAME .'-'.PKG_VERSION .'-'. PKG_RELEASE . ".zip\n");
