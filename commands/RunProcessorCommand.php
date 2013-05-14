@@ -1,6 +1,6 @@
 <?php
 
-use AlanPich\Modx\CLI\AnnotatedCommand;
+use AlanPich\Modx\CLI\ModxCommand;
 use AlanPich\Modx\Installer\ModxInstallerConfig;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -9,96 +9,35 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 
 /**
- * Handles global configuration settings
+ * Runs a MODx Processor script
  *
- * Allows setting of global configuration options that
- * will be used to by other available commands
+ * Call a MODx processor directly from the command line.
+ * Script properties should be passed in the form of --key=value
  *
- * @command globals
+ * @command run-processor
  */
-class ConfigCommand extends AnnotatedCommand
+class RunProcessorCommand extends ModxCommand
 {
 
-    protected function defineCommandOptions()
-    {
+    protected function defineCommandOptions(){
 
-        // Flag to show all globals options
-        $this->addOption('all', 'A', InputOption::VALUE_NONE, "List all defined globals settings");
-
-        $this->addArgument('key', InputArgument::OPTIONAL, "Config param name", null);
-        $this->addArgument('value', InputArgument::OPTIONAL, "If set, will set param [key] to this value", null);
+        $this->addArgument('processor',InputArgument::REQUIRED);
 
     }
 
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output)
     {
-        if ($input->getOption('all')) {
-            return $this->listAllOptions($input, $output);
-        }
+        parent::execute($input,$output);
 
-        $key = $input->getArgument('key');
-        if (is_null($key)) {
-            return;
-        }
+        $processorName = $input->getArgument('processor');
 
-        $value = $input->getArgument('value');
+        $output->writeln("<info>Running processor {$processorName}</info>");
 
-        if (is_null($value)) {
-            $this->showConfigKey($key, $input, $output);
-        } else {
-            $this->setConfigKey($key, $value, $input,$output);
-        }
 
+        $response = $this->modx->runProcessor($processorName,array());
+
+       # print_r(array_keys(get_object_vars($response)));
+        $output->write(print_r($response,1));
     }
-
-
-    /**
-     * Displays a list of all defined globals settings
-     *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @return int
-     */
-    protected function listAllOptions(InputInterface $input, OutputInterface $output)
-    {
-        $settings = $this->globals->toArray();
-        $table = $this->getHelperSet()->get('table');
-
-        $table->setHeaders(array('Key','Value'));
-
-        foreach($settings as $key => $val){
-            $rows[] = array($key,$val);
-        }
-        $table->setRows($rows);
-        $table->render($output);
-        return 0;
-    }
-
-
-    /**
-     * Display the value of a globals setting
-     *
-     * @param string                                           $key
-     * @param Symfony\Component\Console\Input\InputInterface   $input
-     * @param Symfony\Component\Console\Output\OutputInterface $output
-     */
-    protected function showConfigKey($key, InputInterface $input, OutputInterface $output)
-    {
-        $output->writeln("$key - // @TODO Show value here");
-    }
-
-
-    /**
-     * @param string           $key
-     * @param mixed            $value
-     * @param InputInterface   $input
-     * @param OutputInterface  $output
-     */
-    protected function setConfigKey($key, $value, InputInterface $input, OutputInterface $output)
-    {
-        $this->globals->$key = $value;
-    }
-
-
 }

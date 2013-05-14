@@ -1,4 +1,5 @@
 #!/bin/bash
 
 PHP=`which php`
-$PHP modx-cli-tool.php $@
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+$PHP $DIR/modx-cli-tool.php $@

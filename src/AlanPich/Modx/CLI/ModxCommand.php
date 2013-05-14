@@ -2,11 +2,12 @@
 
 namespace AlanPich\Modx\CLI;
 
+use AlanPich\Modx\ModxWrapper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use \phpDocumentor\Reflection\DocBlock;
+use phpDocumentor\Reflection\DocBlock;
 
 
 /**
@@ -14,33 +15,21 @@ use \phpDocumentor\Reflection\DocBlock;
  *
  * @package AlanPich\Modx\CLI
  */
-abstract class AnnotatedCommand extends \Symfony\Component\Console\Command\Command
+abstract class ModxCommand extends AnnotatedCommand
 {
-    protected $interactive = false;
 
-    protected $globals = array();
+    /** @var \modX  */
+    protected $modx;
 
     protected function configure()
     {
         parent::configure();
 
-        // Populate description from docBlock
-        $class = get_called_class();
-        $reflection = new \ReflectionClass($class);
-        $docBlock = new DocBlock($reflection);
+        /**
+         * Optional argument to explicitely specify path to modx installation
+         */
+        $this->addOption('path','p',InputOption::VALUE_REQUIRED,'Path to MODx installation');
 
-        $shortDescription = $docBlock->getShortDescription();
-        $commandName = $docBlock->getTagsByName('command')[0]->getContent();
-        $longDescription = $docBlock->getLongDescription()->getContents();
-
-        $this->setDescription($shortDescription);
-        $this->setHelp($longDescription);
-        $this->setName($commandName);
-
-        $this->defineCommandOptions();
-
-        // Load global globals
-        $this->globals = new Configuration();
     }
 
 
@@ -48,6 +37,30 @@ abstract class AnnotatedCommand extends \Symfony\Component\Console\Command\Comma
      * Define command options and arguments
      */
     protected function defineCommandOptions(){}
+
+
+
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
+        // Establish MODx path
+        $path = $input->getOption('path');
+        if(is_null($path)){
+            $path = $this->checkForConfigFile();
+        }
+
+        // Grab a modx wrapper
+        $this->modx = new ModxWrapper($path,true);
+
+    }
+
+
+
+
+    protected function checkForConfigFile(){
+        $pwd = getcwd();
+        echo "Looking for config in $pwd\n";
+    }
+
 
 
 }
