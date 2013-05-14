@@ -24,6 +24,9 @@ class ModxWrapper
         include $indexFile;
         $this->modx = $modx;
 
+        // Load Error handler service
+        $this->modx->getService('error','error.modError');
+
         if ($initMgr) {
             $this->modx->initialize('mgr');
         }
@@ -42,7 +45,11 @@ class ModxWrapper
     {
         /** @var \modProcessorResponse $processed */
         $processed = $this->modx->runProcessor($action,$scriptProperties,$options);
-        return json_decode($processed->getResponse());
+        $response = $processed->getResponse();
+        if(!is_string($response))
+            var_dump($response);
+
+        return json_decode($response);
     }
 
 
