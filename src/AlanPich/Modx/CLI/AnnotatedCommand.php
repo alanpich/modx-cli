@@ -19,10 +19,12 @@ abstract class AnnotatedCommand extends \Symfony\Component\Console\Command\Comma
     protected $interactive = false;
 
     protected $globals = array();
+    protected $_globals;
 
     protected function configure()
     {
         parent::configure();
+
 
         // Populate description from docBlock
         $class = get_called_class();
@@ -39,8 +41,6 @@ abstract class AnnotatedCommand extends \Symfony\Component\Console\Command\Comma
 
         $this->defineCommandOptions();
 
-        // Load global globals
-        $this->globals = new Configuration();
     }
 
 
@@ -48,6 +48,15 @@ abstract class AnnotatedCommand extends \Symfony\Component\Console\Command\Comma
      * Define command options and arguments
      */
     protected function defineCommandOptions(){}
+
+
+
+    protected function globals($key){
+        if(is_null($this->_globals)){
+            $this->_globals = $this->getApplication()->getConfig();
+        }
+        return $this->_globals->$key;
+    }
 
 
 }

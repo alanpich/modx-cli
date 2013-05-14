@@ -29,6 +29,10 @@ class SystemSettingCommand extends ModxCommand
     {
         parent::execute($input, $output);
 
+
+        print_r($this->globals('install.cmsadmin'));
+
+
         $key = $input->getArgument('key');
         $value = $input->getArgument('value');
 

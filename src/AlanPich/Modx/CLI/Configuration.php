@@ -2,6 +2,8 @@
 
 namespace AlanPich\Modx\CLI;
 
+// @TODO Improve configuration to allow writing back to multiple file sources
+
 class Configuration
 {
 
@@ -10,21 +12,15 @@ class Configuration
     public $data = array();
 
 
-    public function __construct()
-    {
-        $this->_configFile = MODX_CLI_TOOL . "config/global.json";
+    public function loadFromFile($path){
+        if(!is_readable($path))
+            throw new Exception("Config file not found at $path");
 
-        // Load globals
-        if (is_readable($this->_configFile)) {
-            $json = file_get_contents($this->_configFile);
-            $data = json_decode($json, true);
-            if (!is_null($data)) {
-                $this->data = $data;
-            } else {
-                echo "ERROR: ".json_last_error()."\n";
+        $data = json_decode(file_get_contents($path));
+        if(!is_null($data)){
+            foreach($data as $key => $val){
+                $this->data[$key] = $val;
             }
-        } else {
-            echo "ERROR: cant load globals from {$this->_configFile}\n";
         }
     }
 
