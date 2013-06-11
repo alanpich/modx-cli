@@ -50,6 +50,8 @@ abstract class ModxCommand extends AnnotatedCommand
 
         // Grab a modx wrapper
         $this->modx = new ModxWrapper($path,true);
+        $this->modx->setLogLevel(\xPDO::LOG_LEVEL_WARN);
+        $this->modx->setLogTarget("ECHO");
 
     }
 

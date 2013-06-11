@@ -45,6 +45,9 @@ class ModxWrapper
     {
         /** @var \modProcessorResponse $processed */
         $processed = $this->modx->runProcessor($action,$scriptProperties,$options);
+
+       #  print_r($processed);
+
         $response = $processed->getResponse();
         if(!is_string($response))
             var_dump($response);

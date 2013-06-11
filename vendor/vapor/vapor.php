@@ -576,6 +576,3 @@ try {
     printf("Vapor execution completed with exception in %2.4fs\n", $endTime - $startTime);
 }
 printf("Vapor execution completed without exception in %2.4fs\n", $endTime - $startTime);
-
-
-die("VAPOURED TO ".PKG_NAME .'-'.PKG_VERSION .'-'. PKG_RELEASE . ".zip\n");

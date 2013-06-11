@@ -117,13 +117,13 @@ class InstallCommand extends AnnotatedCommand
         $config = new ModxInstallerConfig();
 
 
-        // Load any configs from globals
-        foreach($config as $key => $val){
-            $configKey = "install.".$key;
-            if(!is_null($this->globals->$configKey)){
-                $config->$key = $this->globals->$configKey;
-            }
-        }
+//        // Load any configs from globals
+//        foreach($config as $key => $val){
+//            $configKey = "install.".$key;
+//            if(!is_null($this->globals->$configKey)){
+//                $config->$key = $this->globals->$configKey;
+//            }
+//        }
 
 
         // Are there any globals files to import?
