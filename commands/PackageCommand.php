@@ -40,11 +40,32 @@ class PackageCommand extends ModxCommand
         }
     }
 
+
+    /**
+     * Configure Arguments & Options
+     */
+    protected function configure()
+    {
+        parent::configure();
+        $this->addArgument("cmd", InputArgument::REQUIRED, "Command");
+        $this->addArgument("arg1", InputArgument::OPTIONAL, "Command");
+
+        if(is_null($this->modx)){
+           $this->provider = false;
+        } else {
+            $this->provider = new AlanPich\Modx\PackageProvider($this->modx);
+        }
+    }
+
+
     /**
      * Search for packages in the MODx repo
      */
     protected function _cmd_search($q, $dialog, $output)
     {
+        if($this->provider===false)
+            throw new Exception("No MODx provider available");
+
         if (!strlen($q))
             throw new Exception('Invalid search term');
 
@@ -65,18 +86,6 @@ class PackageCommand extends ModxCommand
     }
 
 
-    /**
-     * Configure Arguments & Options
-     */
-    protected function configure()
-    {
-        parent::configure();
-        $this->addArgument("cmd", InputArgument::REQUIRED, "Command");
-        $this->addArgument("arg1", InputArgument::OPTIONAL, "Command");
-
-        $this->provider = new AlanPich\Modx\PackageProvider($this->modx);
-    }
-
 
     /**
      * Install a package to MODx
@@ -88,6 +97,9 @@ class PackageCommand extends ModxCommand
      */
     protected function _cmd_install($packageName, $dialog, $output)
     {
+        if($this->provider===false)
+            throw new Exception("No MODx provider available");
+
         if(!$this->modx || is_null($this->modx))
             throw new Exception("Not bound to a MODx install");
 
