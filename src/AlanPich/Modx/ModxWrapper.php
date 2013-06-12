@@ -14,7 +14,8 @@ class ModxWrapper
     public function __construct($path, $initMgr = false)
     {
         $this->path = $path;
-        define('MODX_API_MODE', 1);
+        if(!defined('MODX_API_MODE'))
+            define('MODX_API_MODE', 1);
         /** @var \modX $modx */
         $indexFile = rtrim($path, '/') . '/index.php';
         if (!is_readable($indexFile)) {

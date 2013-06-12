@@ -143,13 +143,20 @@ class PackageProvider
     /**
      * Perform full download/install of package
      * @param string $packageName
+     * @throws \Exception
      * @return string
      */
     public function processInstall($packageName) {
         $packages = $this->search($packageName);
+
+        if(!array_key_exists($packageName,$packages)){
+            return '';
+        };
+
         $this->download($packages[$packageName]);
         $response = $this->install($packages[$packageName]);
         $output = $response->response['message'];
         return $output;
     }
+
 }
