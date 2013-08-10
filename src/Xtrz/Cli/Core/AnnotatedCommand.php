@@ -1,6 +1,6 @@
 <?php
 
-namespace AlanPich\Modx\CLI;
+namespace Xtrz\Cli\Core;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,7 +12,7 @@ use \phpDocumentor\Reflection\DocBlock;
 /**
  * Class AbstractCommand
  *
- * @package AlanPich\Modx\CLI
+ * @package ModxCLI\Modx\CLI
  */
 abstract class AnnotatedCommand extends \Symfony\Component\Console\Command\Command
 {
@@ -21,7 +21,7 @@ abstract class AnnotatedCommand extends \Symfony\Component\Console\Command\Comma
     protected $globals = array();
     protected $_globals;
 
-    protected function configure()
+    public function configure()
     {
         parent::configure();
 

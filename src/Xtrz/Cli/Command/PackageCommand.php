@@ -1,6 +1,5 @@
 <?php
-use AlanPich\Modx\CLI\ModxCommand;
-use AlanPich\Modx\PackageProvider;
+use Xtrz\Cli\Core\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -12,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @command package
  */
-class PackageCommand extends ModxCommand
+class PackageCommand extends Command
 {
     /** @var PackageProvider */
     protected $provider;
@@ -44,7 +43,7 @@ class PackageCommand extends ModxCommand
     /**
      * Configure Arguments & Options
      */
-    protected function configure()
+    public function configure()
     {
         parent::configure();
         $this->addArgument("cmd", InputArgument::REQUIRED, "Command");
@@ -53,7 +52,11 @@ class PackageCommand extends ModxCommand
         if(is_null($this->modx)){
            $this->provider = false;
         } else {
-            $this->provider = new AlanPich\Modx\PackageProvider($this->modx);
+            try{
+                $this->provider = new Xtrz\Modx\PackageProvider($this->modx);
+            }catch(\Exception $E){
+
+            }
         }
     }
 

@@ -1,8 +1,0 @@
-{
-    "install.database_user": "root",
-    "install.database_password": "password",
-    "install.cmsadmin": "alan",
-    "install.cmspassword": "password",
-    "install.cmsadminemail": "alan.pich@gmail.com",
-    "install.checkversiononinstall": "0"
-}

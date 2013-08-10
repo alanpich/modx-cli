@@ -1,5 +1,5 @@
 <?php
-use AlanPich\Modx\CLI\AnnotatedCommand;
+use ModxCLI\Core\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -13,17 +13,18 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @command init
  */
-class InitCommand extends AnnotatedCommand
+class InitCommand extends Command
 {
 
     /**
      * Configure Arguments & Options
      */
-    protected function configure()
+    public function configure()
     {
         parent::configure();
 
         $this->addArgument("modx_path", InputArgument::OPTIONAL, "Path to modx installation to bind to");
+        $this->addOption("force","f", InputOption::VALUE_NONE, "Force overwrite of existing config file");
 
     }
 
@@ -38,9 +39,15 @@ class InitCommand extends AnnotatedCommand
     {
         $dialog = $this->getHelperSet()->get('dialog');
 
+        if(strlen($this->config->modx_path) && !$input->getOption('force')){
+            $output->writeln("<fg=red>Config file already exists in this directory</fg=red>");
+            return;
+        }
+        $modx_path = $input->getArgument('modx_path');
+
+
         $output->writeln('Initializing MODx CLI session');
 
-        $modx_path = $input->getArgument('modx_path');
         if (is_null($modx_path)) {
             $modx_path = $dialog->ask(
                 $output,
@@ -58,7 +65,7 @@ class InitCommand extends AnnotatedCommand
             throw new Exception("MODx installation not found at path");
 
 
-        $config = new AlanPich\Modx\CLI\Configuration(getcwd().DIRECTORY_SEPARATOR.'modx-cli.json');
+        $config = new ModxCLI\Core\Configuration(getcwd().DIRECTORY_SEPARATOR.'modx-cli.json');
 
         $config->set('modx_path',$modx_path);
 
@@ -93,7 +100,7 @@ class InitCommand extends AnnotatedCommand
      */
     protected function dropConfigFile($path)
     {
-        $data = new \AlanPich\Modx\ModxWrapper($path);
+        $data = new \Xtrz\Modx\ModxWrapper($path);
         $here = getcwd();
         file_put_contents($here.DIRECTORY_SEPARATOR.'/modx-cli.json',$data);
     }

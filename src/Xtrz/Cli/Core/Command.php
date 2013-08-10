@@ -1,34 +1,40 @@
 <?php
 
-namespace AlanPich\Modx\CLI;
+namespace Xtrz\Cli\Core;
 
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use AlanPich\Modx\CLI\Configuration;
+use Xtrz\Modx\Pkg;
 
 
-class ModxCommand extends AnnotatedCommand
+class Command extends AnnotatedCommand
 {
-    /** @var Configuration */
+    /** @var Configuration Configuration */
     protected $config;
-
     /** @var \modX */
     protected $modx;
+
+    protected $pkg;
 
     /**
      * Set up
      */
-    protected function configure()
+    public function configure()
     {
         parent::configure();
 
         // Load configuration
-        $this->config = new Configuration( getcwd().DIRECTORY_SEPARATOR.'modx-cli.json');
+        $this->config = new Configuration(getcwd() . DIRECTORY_SEPARATOR . 'modx-cli.json');
 
         // Load MODx instance
         $this->modx = $this->config->getModx();
     }
+
+
+    protected function msg($output,$msg){
+        $output->writeln('<info>'.$msg.'</info>');
+    }
+
 
 }

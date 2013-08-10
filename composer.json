@@ -1,5 +1,5 @@
 {
-    "name": "AlanPich/modx-cli",
+    "name": "ModxCLI/modx-cli",
     "description": "CLI tool for MODx development",
     "minimum-stability": "stable",
     "authors": [
@@ -10,7 +10,7 @@
     ],
 
     "autoload": {
-        "psr-0": { "AlanPich\\Modx": "src/" }
+        "psr-0": { "Xtrz": "src/" }
     },
 
     "require": {

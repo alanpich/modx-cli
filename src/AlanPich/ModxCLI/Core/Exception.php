@@ -1,5 +1,5 @@
 <?php
-namespace AlanPich\Modx\CLI;
+namespace ModxCLI\Core;
 
 
 class Exception extends \Exception {

@@ -1,11 +1,10 @@
 <?php
 
-namespace AlanPich\Modx\CLI;
+namespace Xtrz\Cli\Core;
 
 /**
  * Class Configuration
  *
- * @package AlanPich\Modx\CLI
  */
 class Configuration
 {
@@ -18,6 +17,7 @@ class Configuration
     protected $_global_file;
     protected $_globals;
     protected $_locals;
+    protected  static $_instance;
 
     /**
      * Create new configuration object.
@@ -26,30 +26,36 @@ class Configuration
      */
     public function __construct($file = '')
     {
-        $this->_global_file = MODX_CLI_TOOL . "config/config.json";
+        $this->_global_file = MODX_CLI_TOOL . "config/global.config.php";
         $this->_config_file = $file;
 
         $this->_loadGlobalConfig();
         $this->_loadSuppliedConfig($file);
     }
 
+
+    /**
+     * Maintain a single instance of self
+     *
+     * @return Configuration
+     */
+    public static function getInstance(){
+        if(is_null(self::$_instance)){
+            self::$_instance = new Configuration( getcwd().DIRECTORY_SEPARATOR.'modx-cli.json');
+        }
+        return self::$_instance;
+    }
+
+
     /**
      * Load global config file
      */
     protected function _loadGlobalConfig()
     {
-        if (!is_readable($this->_global_file))
-            return;
-
-        $json = file_get_contents($this->_global_file);
-        $data = json_decode($json);
-        if (is_null($data)) {
+        if (!is_readable($this->_global_file)){
             return;
         }
-
-        foreach ($data as $key => $value) {
-            $this->_globals[$key] = $value;
-        }
+        $this->_globals = include $this->_global_file;
     }
 
     /**
@@ -81,7 +87,6 @@ class Configuration
      */
     public function __get($key)
     {
-        // Check locals
         if (isset($this->_locals[$key]))
             return $this->_locals[$key];
 
@@ -109,8 +114,8 @@ class Configuration
      */
     protected function _persistLocals()
     {
-        $json = json_encode($this->_locals, JSON_PRETTY_PRINT);
-        file_put_contents($this->_config_file, $json);
+        $json = json_encode($this->_locals, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        file_put_contents($this->_config_file, $json . "\n" );
     }
 
     /**
@@ -129,15 +134,17 @@ class Configuration
      */
     protected function _persistGlobals()
     {
-        $json = json_encode($this->_globals, JSON_PRETTY_PRINT);
-        file_put_contents($this->_globals, $json);
+ //       $json = json_encode($this->_globals, JSON_PRETTY_PRINT);
+   //     file_put_contents($this->_globals, $json);
     }
 
     public function getModx()
     {
         $path = stripslashes($this->modx_path);
         if(strlen($path)){
-            define('MODX_API_MODE',true);
+            if(!defined('MODX_API_MODE')){
+                define('MODX_API_MODE',true);
+            }
             include $path.DIRECTORY_SEPARATOR.'index.php';
             $modx->initialize('mgr');
             $modx->getService('error','error.modError');
@@ -145,5 +152,9 @@ class Configuration
         }
     }
 
+
+    public function toArray(){
+        return array_merge($this->_globals,$this->_locals);
+    }
 
 }
